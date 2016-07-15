@@ -64,10 +64,10 @@ private extension UIColor {
 Defines the Style of the button.
 
 - Outline: For this style the button is clear. The image is tinted based on the current tint color. The button "track" outlines the image. This is comparible to the App Store download button.
-- Solid:   In this style the button has a solid background.  The background color is the current tint color and the image is tinted with the current foreground color. This is comparible to Google Material Design.
+- .spinning:   In this style the button has a solid background.  The background color is the current tint color and the image is tinted with the current foreground color. This is comparible to Google Material Design.
 */
 public enum ActivityIndicatorButtonStyle {
-    case Outline, Solid
+    case outline, solid
 }
 
 /**
@@ -78,7 +78,7 @@ Defines the state of the spinning and progress animations.
 - Percentage: A circular progress bar surrounds the button. The value represents the percentage filled.
 */
 public enum ActivityIndicatorButtonProgressBarStyle: Equatable {
-    case Inactive, Spinning, Percentage(value: Float)
+    case inactive, spinning, percentage(value: Float)
 }
 
 /**
@@ -113,9 +113,9 @@ public struct ActivityIndicatorButtonState: Equatable {
     - parameter trackColor:       Default value is nil
     - parameter foregroundColor:  Default value is nil
     - parameter image:            Default value is nil
-    - parameter progressBarStyle: Default value is .Inactive
+    - parameter progressBarStyle: Default value is .inactive
     */
-    public init(name: String? = nil, tintColor: UIColor? = nil, trackColor: UIColor? = nil, foregroundColor: UIColor? = nil, image: UIImage? = nil, progressBarStyle: ActivityIndicatorButtonProgressBarStyle = .Inactive) {
+    public init(name: String? = nil, tintColor: UIColor? = nil, trackColor: UIColor? = nil, foregroundColor: UIColor? = nil, image: UIImage? = nil, progressBarStyle: ActivityIndicatorButtonProgressBarStyle = .inactive) {
         self.name = name
         self.tintColor = tintColor
         self.trackColor = trackColor
@@ -125,10 +125,10 @@ public struct ActivityIndicatorButtonState: Equatable {
     }
     
     /**
-    Convenience function to set the progressBarStyle to .Percentage(value: value)
+    Convenience function to set the progressBarStyle to .percentage(value: value)
     */
     public mutating func setProgress(value: Float) {
-        self.progressBarStyle = .Percentage(value: value)
+        self.progressBarStyle = .percentage(value: value)
     }
 }
 
@@ -139,25 +139,25 @@ We need to have custom support for Equatable since on of our states has an input
 */
 public func == (lhs: ActivityIndicatorButtonProgressBarStyle, rhs: ActivityIndicatorButtonProgressBarStyle) -> Bool {
     switch lhs {
-    case .Inactive:
+    case .inactive:
         switch rhs {
-        case .Inactive:
+        case .inactive:
             return true
         default:
             return false
         }
         
-    case .Spinning:
+    case .spinning:
         switch rhs {
-        case .Spinning:
+        case .spinning:
             return true
         default:
             return false
         }
         
-    case .Percentage(let lhsValue):
+    case .percentage(let lhsValue):
         switch rhs {
-        case .Percentage(let rhsValue):
+        case .percentage(let rhsValue):
             return lhsValue == rhsValue
         default:
             return false
@@ -194,7 +194,7 @@ public class ActivityIndicatorButton: UIControl {
     // MARK: State
     
     /// Internal storage of activityState
-    private var _activityState: ActivityIndicatorButtonState = ActivityIndicatorButtonState(progressBarStyle: .Inactive)
+    private var _activityState: ActivityIndicatorButtonState = ActivityIndicatorButtonState(progressBarStyle: .inactive)
     
     
     /// Set the ActivityIndicatorButtonState.
@@ -323,7 +323,7 @@ public class ActivityIndicatorButton: UIControl {
 
     /// If true the circular background of this control is colored with the tint color and the image is colored white. Otherwise the background is clear and the image is tinted. Image color is only adjusted if it is a template image.
     /// :see: ActivityIndicatorButtonStyle
-    @IBInspectable public var style: ActivityIndicatorButtonStyle = .Solid {
+    @IBInspectable public var style: ActivityIndicatorButtonStyle = .solid {
         didSet {
             self.updateAllColors()
         }
@@ -500,8 +500,8 @@ public class ActivityIndicatorButton: UIControl {
 
 
         var nextDisplayState = DisplayState(
-            trackVisible: style == .Solid || activityState.progressBarStyle != .Spinning,
-            progressBarVisible: activityState.progressBarStyle != .Inactive,
+            trackVisible: style == .solid || activityState.progressBarStyle != .spinning,
+            progressBarVisible: activityState.progressBarStyle != .inactive,
             tintColor: tintColorForCurrentActivityState,
             trackColor: trackColorForCurrentActivityState,
             image: activityState.image,
@@ -510,10 +510,10 @@ public class ActivityIndicatorButton: UIControl {
         var prevDisplayState = DisplayState(
             trackVisible: backgroundView.shapeLayer.opacity > 0.5,
             progressBarVisible: progressView.progressLayer.opacity > 0.5,
-            tintColor: UIColor(cgColor: (self.style == .Solid ? backgroundView.shapeLayer.fillColor : backgroundView.shapeLayer.strokeColor)!),
+            tintColor: UIColor(cgColor: (self.style == .solid ? backgroundView.shapeLayer.fillColor : backgroundView.shapeLayer.strokeColor)!),
             trackColor: UIColor(cgColor: backgroundView.shapeLayer.strokeColor!),
             image: imageView.image,
-            progressBarStyle: renderedActivityState != nil ? renderedActivityState!.progressBarStyle : .Inactive)
+            progressBarStyle: renderedActivityState != nil ? renderedActivityState!.progressBarStyle : .inactive)
 
 
         
@@ -582,7 +582,7 @@ public class ActivityIndicatorButton: UIControl {
 
         // Color transition for "useSolidColorButtons"
         // If the tint color is different between 2 states we animate the change by expanding the new color from the center of the button
-        if prevDisplayState.tintColor != nextDisplayState.tintColor && self.style == .Solid  {
+        if prevDisplayState.tintColor != nextDisplayState.tintColor && self.style == .solid  {
             
             // The transition layer provides the expanding color change in the state transition. The background view color isn't updating until completing this expand animation
             let transitionLayer = CAShapeLayer()
@@ -646,7 +646,7 @@ public class ActivityIndicatorButton: UIControl {
         self.updateSpinningAnimation()
         
         switch prevDisplayState.progressBarStyle {
-        case .Percentage(let value):
+        case .percentage(let value):
             self.updateProgress(fromValue: value, animated: animated)
             
         default:
@@ -665,7 +665,7 @@ public class ActivityIndicatorButton: UIControl {
     
     private func updateProgress(fromValue prevValue: Float, animated: Bool) {
         switch self.activityState.progressBarStyle {
-        case .Percentage(let value):
+        case .percentage(let value):
             
             if animated {
                 let anim = CABasicAnimation(keyPath: "strokeEnd")
@@ -698,7 +698,7 @@ public class ActivityIndicatorButton: UIControl {
 
         self.progressView.progressLayer.removeAnimation(forKey: kStrokeAnim)
         self.progressView.progressLayer.removeAnimation(forKey: kRotationAnim)
-        if self.activityState.progressBarStyle == .Spinning {
+        if self.activityState.progressBarStyle == .spinning {
 
             // The animation is broken into stages that execute in order. All animations in "stage 1" execute simultaneously followed by animations in "stage 2"
             // "Head" refers to the strokeStart which is trailing behind the animation (i.e. the animation is moving clockwise away from the head)
@@ -825,12 +825,12 @@ public class ActivityIndicatorButton: UIControl {
         }
         
         switch self.style {
-        case .Outline:
+        case .outline:
             self.backgroundView.shapeLayer.fillColor = UIColor.clear().cgColor
             self.imageView.tintColor = tintColor
             self.dropShadowLayer.shadowColor = UIColor.clear().cgColor
             
-        case .Solid:
+        case .solid:
             self.backgroundView.shapeLayer.fillColor = tintColor.cgColor
             self.imageView.tintColor = foregroundColor
             self.dropShadowLayer.shadowColor = self.shadowColor.cgColor
