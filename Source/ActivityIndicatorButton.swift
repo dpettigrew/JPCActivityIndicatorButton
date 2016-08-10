@@ -257,7 +257,7 @@ public class ActivityIndicatorButton: UIControl {
     /// :see: activityState
     /// :see: ActivityIndicatorButtonState
     /// :see: trackColorForCurrentActivityState
-    @IBInspectable public var normalTrackColor: UIColor = UIColor.lightGray() {
+    @IBInspectable public var normalTrackColor: UIColor = UIColor.lightGray {
         didSet {
             updateAllColors()
         }
@@ -269,7 +269,7 @@ public class ActivityIndicatorButton: UIControl {
     /// :see: activityState
     /// :see: ActivityIndicatorButtonState
     /// :see: foregroundColorForCurrentActivityState
-    @IBInspectable public var normalForegroundColor: UIColor = UIColor.white() {
+    @IBInspectable public var normalForegroundColor: UIColor = UIColor.white {
         didSet {
             updateAllColors()
         }
@@ -310,7 +310,7 @@ public class ActivityIndicatorButton: UIControl {
     @IBInspectable public var hitAnimationDuration: CFTimeInterval = 0.5
     
     /// The color of the touch down and touch up ripple animation. Default value is UIColor.gray().colorWithAlphaComponent(0.5).
-    @IBInspectable public var hitAnimationColor: UIColor = UIColor.gray().withAlphaComponent(0.5)
+    @IBInspectable public var hitAnimationColor: UIColor = UIColor.gray.withAlphaComponent(0.5)
     
     
     
@@ -318,7 +318,7 @@ public class ActivityIndicatorButton: UIControl {
     
     /// The color of the drop shadow or UIColor.clear() if you do not wish to display a shadow. The shadow never drawn is useSolidColorButtons is false.
     /// :see: useSolidColorButtons
-    @IBInspectable public var shadowColor: UIColor = UIColor.black()
+    @IBInspectable public var shadowColor: UIColor = UIColor.black
     
 
     /// If true the circular background of this control is colored with the tint color and the image is colored white. Otherwise the background is clear and the image is tinted. Image color is only adjusted if it is a template image.
@@ -826,9 +826,9 @@ public class ActivityIndicatorButton: UIControl {
         
         switch self.style {
         case .outline:
-            self.backgroundView.shapeLayer.fillColor = UIColor.clear().cgColor
+            self.backgroundView.shapeLayer.fillColor = UIColor.clear.cgColor
             self.imageView.tintColor = tintColor
-            self.dropShadowLayer.shadowColor = UIColor.clear().cgColor
+            self.dropShadowLayer.shadowColor = UIColor.clear.cgColor
             
         case .solid:
             self.backgroundView.shapeLayer.fillColor = tintColor.cgColor
@@ -846,7 +846,7 @@ public class ActivityIndicatorButton: UIControl {
         }
         
         let trackColor = self.trackColorForCurrentActivityState.cgColor
-        let clear = UIColor.clear().cgColor
+        let clear = UIColor.clear.cgColor
         
         self.progressView.progressLayer.strokeColor = tintColor.cgColor
         self.progressView.progressLayer.fillColor = clear
@@ -884,7 +884,7 @@ public class ActivityIndicatorButton: UIControl {
             }
         }
         
-        override class func layerClass() -> AnyClass {
+        override public class var layerClass: AnyClass {
             return CAShapeLayer.self
         }
         
@@ -898,7 +898,7 @@ public class ActivityIndicatorButton: UIControl {
             }
         }
         
-        override class func layerClass() -> AnyClass {
+        override public class var layerClass: AnyClass {
             return CAShapeLayer.self
         }
         
@@ -985,15 +985,15 @@ public class ActivityIndicatorButton: UIControl {
         self.backgroundView.translatesAutoresizingMaskIntoConstraints = false
         self.progressView.translatesAutoresizingMaskIntoConstraints = false
         
-        self.imageView.backgroundColor = UIColor.clear()
-        self.backgroundView.backgroundColor = UIColor.clear()
-        self.progressView.backgroundColor = UIColor.clear()
+        self.imageView.backgroundColor = UIColor.clear
+        self.backgroundView.backgroundColor = UIColor.clear
+        self.progressView.backgroundColor = UIColor.clear
         
         self.imageView.isUserInteractionEnabled = false
         self.backgroundView.isUserInteractionEnabled = false
         self.progressView.isUserInteractionEnabled = false
         
-        self.backgroundColor = UIColor.clear()
+        self.backgroundColor = UIColor.clear
         
         self.addSubview(self.backgroundView)
         self.addSubview(self.imageView)
@@ -1012,7 +1012,7 @@ public class ActivityIndicatorButton: UIControl {
         
         // Set up imageViewMask
         
-        self.imageViewMask.fillColor = UIColor.white().cgColor
+        self.imageViewMask.fillColor = UIColor.white.cgColor
         self.imageView.layer.mask = self.imageViewMask
         
         // Set up drop shadow
@@ -1063,7 +1063,7 @@ public class ActivityIndicatorButton: UIControl {
         updateForCurrentBounds()
     }
 
-    public override func intrinsicContentSize() -> CGSize {
+    public override var intrinsicContentSize: CGSize {
         var maxW: CGFloat = Constants.Layout.defaultContentSize.width
         var maxH: CGFloat = Constants.Layout.defaultContentSize.height
 
@@ -1107,7 +1107,7 @@ public class ActivityIndicatorButton: UIControl {
 
         let layer = CAShapeLayer()
         layer.fillColor = color
-        layer.strokeColor = UIColor.clear().cgColor
+        layer.strokeColor = UIColor.clear.cgColor
         self.layer.insertSublayer(layer, at: 0)
 
         let bounds = self.bounds
