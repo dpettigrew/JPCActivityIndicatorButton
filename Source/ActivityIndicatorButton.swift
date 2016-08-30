@@ -1000,7 +1000,7 @@ public class ActivityIndicatorButton: UIControl {
         self.addSubview(self.progressView)
 
         let views = ["progress" : self.progressView]
-        let metrics: [String : NSNumber] = ["OUTER" : Constants.Layout.outerPadding]
+        let metrics: [String : NSNumber] = ["OUTER" : NSNumber(value: Float(Constants.Layout.outerPadding))]
         
         self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(OUTER)-[progress]-(OUTER)-|", options: NSLayoutFormatOptions(), metrics: metrics, views: views))
         self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(OUTER)-[progress]-(OUTER)-|", options: NSLayoutFormatOptions(), metrics: metrics, views: views))
@@ -1032,8 +1032,8 @@ public class ActivityIndicatorButton: UIControl {
         self.removeConstraints(buttonConstraints)
         buttonConstraints.removeAll()
         
-        let views = ["bg" : self.backgroundView, "image" : imageView]
-        let metrics: [String : NSNumber] = ["INNER" : innerPadding, "IMAGE_PAD" : innerPadding + minimumImagePadding]
+        let views: [String : UIView] = ["bg" : self.backgroundView, "image" : imageView]
+        let metrics: [String : NSNumber] = ["INNER" : NSNumber(value: Float(innerPadding)), "IMAGE_PAD" : NSNumber(value: Float(innerPadding + minimumImagePadding))]
         
         buttonConstraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-(INNER)-[bg]-(INNER)-|", options: NSLayoutFormatOptions(), metrics: metrics, views: views)
         buttonConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-(INNER)-[bg]-(INNER)-|", options: NSLayoutFormatOptions(), metrics: metrics, views: views)
