@@ -162,6 +162,9 @@ public func == (lhs: ActivityIndicatorButtonState, rhs: ActivityIndicatorButtonS
     return lhs.tintColor == rhs.tintColor && lhs.trackColor == rhs.trackColor && lhs.image == rhs.image && lhs.progressBarStyle == rhs.progressBarStyle
 }
 
+// swiftlint:disable type_body_length
+// swiftlint:disable file_length
+
 @IBDesignable
 public class ActivityIndicatorButton: UIControl {
 
