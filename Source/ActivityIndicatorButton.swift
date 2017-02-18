@@ -35,10 +35,8 @@ SOFTWARE.
 
 import UIKit
 
-
-
 private extension CGRect {
-    
+
     var center: CGPoint {
         get {
             return CGPoint(x: self.midX, y: self.midY)
@@ -47,18 +45,15 @@ private extension CGRect {
 }
 
 private extension UIColor {
-    
+
     func colorWithSaturation(sat: CGFloat) -> UIColor {
-        
+
         var hue: CGFloat = 0, satOld: CGFloat = 0, bright: CGFloat = 0, alpha: CGFloat = 0
         self.getHue(&hue, saturation: &satOld, brightness: &bright, alpha: &alpha)
-        
+
         return UIColor(hue: hue, saturation: sat, brightness: bright, alpha: alpha)
     }
 }
-
-
-
 
 /**
 Defines the Style of the button.
@@ -85,26 +80,26 @@ public enum ActivityIndicatorButtonProgressBarStyle: Equatable {
 *  This struct defines the current state of an ActivityIndicatorButton.
 */
 public struct ActivityIndicatorButtonState: Equatable {
-  
+
     /// An optional property to help identify this button. Does not effect rendering is any way. Must be set to use the "SavedStates" feature.
     public let name: String?
-    
+
     /// If this is set it will override the tintColor property on the button.
     public var tintColor: UIColor?
-    
+
     /// If this is set it will override the "normalTrackColor" property on the button.
     public var trackColor: UIColor?
-    
+
     /// If this is set it will override the "normalforegroundColor" property on the button.
     public var foregroundColor: UIColor?
-    
+
     /// Optionally provide an image for this state. It is centered in the button.
     public var image: UIImage?
-    
+
     /// The activity state of the button. 
     /// :see: ActivityIndicatorButtonProgressBarStyle
     public var progressBarStyle: ActivityIndicatorButtonProgressBarStyle
-    
+
     /**
     Default initializer. No properties are required. All have default values.
     
@@ -123,7 +118,7 @@ public struct ActivityIndicatorButtonState: Equatable {
         self.image = image
         self.progressBarStyle = progressBarStyle
     }
-    
+
     /**
     Convenience function to set the progressBarStyle to .percentage(value: value)
     */
@@ -131,8 +126,6 @@ public struct ActivityIndicatorButtonState: Equatable {
         self.progressBarStyle = .percentage(value: value)
     }
 }
-
-
 
 /*
 We need to have custom support for Equatable since on of our states has an input argument.
@@ -146,7 +139,7 @@ public func == (lhs: ActivityIndicatorButtonProgressBarStyle, rhs: ActivityIndic
         default:
             return false
         }
-        
+
     case .spinning:
         switch rhs {
         case .spinning:
@@ -154,7 +147,7 @@ public func == (lhs: ActivityIndicatorButtonProgressBarStyle, rhs: ActivityIndic
         default:
             return false
         }
-        
+
     case .percentage(let lhsValue):
         switch rhs {
         case .percentage(let rhsValue):
@@ -169,34 +162,22 @@ public func == (lhs: ActivityIndicatorButtonState, rhs: ActivityIndicatorButtonS
     return lhs.tintColor == rhs.tintColor && lhs.trackColor == rhs.trackColor && lhs.image == rhs.image && lhs.progressBarStyle == rhs.progressBarStyle
 }
 
-
-
-
-
-
 @IBDesignable
 public class ActivityIndicatorButton: UIControl {
 
-
-    
-    
     // MARK: - Public API
-    
-    
+
     public override var isEnabled: Bool {
         didSet {
             self.updateAllColors()
         }
     }
-    
-    
-    
+
     // MARK: State
-    
+
     /// Internal storage of activityState
     private var _activityState: ActivityIndicatorButtonState = ActivityIndicatorButtonState(progressBarStyle: .inactive)
-    
-    
+
     /// Set the ActivityIndicatorButtonState.
     /// You may set custom defined activity states or directly modify the values here.
     /// Animation is implicit. (i.e. this is equivalent to calling transitionActivityState(toState: animated: true)
@@ -210,7 +191,7 @@ public class ActivityIndicatorButton: UIControl {
             self.updateForNextActivityState(animated: true)
         }
     }
-    
+
     /**
     Set activityState with optional animation
     
@@ -220,7 +201,7 @@ public class ActivityIndicatorButton: UIControl {
         self._activityState = toState
         self.updateForNextActivityState(animated: animated)
     }
-    
+
     /// Returns the tintColor that is currently being used. If the current state provides no tint color self.tintColor is returned.
     /// :see: activityState
     /// :see: ActivityIndicatorButtonState
@@ -230,7 +211,7 @@ public class ActivityIndicatorButton: UIControl {
         }
         return self.tintColor
     }
-    
+
     /// Returns the trackColor that is currently being used. If the current state provides no tint color self.normalTrackColor is returned.
     /// :see: activityState
     /// :see: ActivityIndicatorButtonState
@@ -240,7 +221,7 @@ public class ActivityIndicatorButton: UIControl {
         }
         return self.normalTrackColor
     }
-    
+
     /// Returns the foregroundColor that is currently being used. If the current state provides no tint color self.normalForegroundColor is returned.
     /// :see: activityState
     /// :see: ActivityIndicatorButtonState
@@ -250,8 +231,7 @@ public class ActivityIndicatorButton: UIControl {
         }
         return self.normalForegroundColor
     }
-    
-    
+
     /// The color of the outline around the button. A track for the Progress Bar.
     /// This value may be overridden in ActivityIndicatorButtonState
     /// :see: activityState
@@ -262,8 +242,7 @@ public class ActivityIndicatorButton: UIControl {
             updateAllColors()
         }
     }
-    
-    
+
     /// The color of the image. Ignored when style == .Outline.
     /// This value may be overridden in ActivityIndicatorButtonState
     /// :see: activityState
@@ -274,8 +253,7 @@ public class ActivityIndicatorButton: UIControl {
             updateAllColors()
         }
     }
-    
-    
+
     /// Set the image of the current activityState
     /// This is equivalent to creating a new ActivityIndicatorButtonState and setting it to activityState
     /// :see: activityState
@@ -288,38 +266,31 @@ public class ActivityIndicatorButton: UIControl {
             self.activityState.image = newValue
         }
     }
-    
-    
+
     // MARK: State Animations
-    
+
     /// Defines the length of the animation for ActivityState transitions.
     public var animationDuration: CFTimeInterval = 0.2
-    
+
     /// The timing function for ActivityState transitions.
     public var animationTimingFunction: CAMediaTimingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
-    
-    
-    
-    
+
     // MARK: Hit Ripple Animation
-    
+
     /// The distance past the edge of the button which the ripple animation will propagate on touch up and touch down
     @IBInspectable public var hitAnimationDistance: CGFloat = 5.0
-    
+
     /// The duration of the ripple hit animation
     @IBInspectable public var hitAnimationDuration: CFTimeInterval = 0.5
-    
+
     /// The color of the touch down and touch up ripple animation. Default value is UIColor.gray().colorWithAlphaComponent(0.5).
     @IBInspectable public var hitAnimationColor: UIColor = UIColor.gray.withAlphaComponent(0.5)
-    
-    
-    
+
     // MARK: Style
-    
+
     /// The color of the drop shadow or UIColor.clear() if you do not wish to display a shadow. The shadow never drawn is useSolidColorButtons is false.
     /// :see: useSolidColorButtons
     @IBInspectable public var shadowColor: UIColor = UIColor.black
-    
 
     /// If true the circular background of this control is colored with the tint color and the image is colored white. Otherwise the background is clear and the image is tinted. Image color is only adjusted if it is a template image.
     /// :see: ActivityIndicatorButtonStyle
@@ -328,13 +299,9 @@ public class ActivityIndicatorButton: UIControl {
             self.updateAllColors()
         }
     }
-    
-    
-    
-    
-    
+
     // MARK: UI Configuration
-    
+
     /// The width of the circular progress bar / activity indicator
     @IBInspectable public var progressBarWidth: CGFloat = 3 {
         didSet {
@@ -342,7 +309,7 @@ public class ActivityIndicatorButton: UIControl {
             self.updateForCurrentBounds()
         }
     }
-    
+
     /// The width of the track outline separating the progress bar from the button
     @IBInspectable public var trackWidth: CGFloat = 1.5 {
         didSet {
@@ -350,7 +317,7 @@ public class ActivityIndicatorButton: UIControl {
             self.updateForCurrentBounds()
         }
     }
-    
+
     /// The minimum amount of padding between the image and the side of the button
     @IBInspectable public var minimumImagePadding: CGFloat = 5 {
         didSet {
@@ -358,22 +325,17 @@ public class ActivityIndicatorButton: UIControl {
             self.updateForCurrentBounds()
         }
     }
-    
-    
-    
-    
-    
-    
+
     // MARK: - State Management
-    
+
     /// Internal storage of saved states
     private var savedStates: [String : ActivityIndicatorButtonState] = [:]
-    
+
     /// The number of ActivityIndicatorButtonState stored
     public var savedStatesCount: Int {
         return savedStates.count
     }
-    
+
     /**
     Store an ActivityIndicatorButtonState for simple access
     
@@ -389,7 +351,7 @@ public class ActivityIndicatorButton: UIControl {
             savedStates[name] = newValue
         }
     }
-    
+
     /**
     Convenience API for saving a group of states.
     
@@ -401,7 +363,7 @@ public class ActivityIndicatorButton: UIControl {
             self[aState.name!] = aState
         }
     }
-    
+
     /**
     Convenience API for setting a saved state. Equivalent to button.activityState = button["name of state"]
     
@@ -417,43 +379,34 @@ public class ActivityIndicatorButton: UIControl {
         }
         return false
     }
-    
-    
-    
-    
-    
-    
-    
+
     // MARK: - Initialization
-    
+
     public init() {
         super.init(frame: CGRect.zero)
         commonInit()
     }
-    
+
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         commonInit()
     }
-    
+
     public override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
     }
-    
+
     private func commonInit() {
         initialLayoutSetup()
         updateAllColors()
         updateForNextActivityState(animated: false)
-        
+
         // Observe touch down and up for fire ripple animations
         self.addTarget(self, action: Selector(("handleTouchUp:")), for: .touchUpInside)
         self.addTarget(self, action: Selector(("handleTouchDown:")), for: .touchDown)
     }
-    
-    
-    
-    
+
     struct Constants {
         struct Layout {
             static let outerPadding: CGFloat = 1
@@ -465,8 +418,6 @@ public class ActivityIndicatorButton: UIControl {
             static let EndAngle = CGFloat(3 * M_PI_2)
         }
     }
-    
-
 
     // MARK: - IBDesignable
 
@@ -474,16 +425,11 @@ public class ActivityIndicatorButton: UIControl {
         // TODO: Improve rendering for interface builder preview
     }
 
-
-
-    
-    
     // MARK: - State Animations
-    
-    
+
     /// Holds the currently rendered State
     private var renderedActivityState: ActivityIndicatorButtonState?
-    
+
     /**
     Does the real work of transitioning from one ActivityState to the next. If previous state is set will also update out of that state.
     */
@@ -498,7 +444,6 @@ public class ActivityIndicatorButton: UIControl {
             let progressBarStyle: ActivityIndicatorButtonProgressBarStyle
         }
 
-
         var nextDisplayState = DisplayState(
             trackVisible: style == .solid || activityState.progressBarStyle != .spinning,
             progressBarVisible: activityState.progressBarStyle != .inactive,
@@ -506,7 +451,7 @@ public class ActivityIndicatorButton: UIControl {
             trackColor: trackColorForCurrentActivityState,
             image: activityState.image,
             progressBarStyle: activityState.progressBarStyle)
-        
+
         var prevDisplayState = DisplayState(
             trackVisible: backgroundView.shapeLayer.opacity > 0.5,
             progressBarVisible: progressView.progressLayer.opacity > 0.5,
@@ -515,8 +460,6 @@ public class ActivityIndicatorButton: UIControl {
             image: imageView.image,
             progressBarStyle: renderedActivityState != nil ? renderedActivityState!.progressBarStyle : .inactive)
 
-
-        
         // Progress View and Background View animations
 
         struct OpacityAnimation {
@@ -569,8 +512,6 @@ public class ActivityIndicatorButton: UIControl {
             progressOpacity.setNoAnimation(layer: self.progressView.progressLayer)
         }
 
-        
-        
         // A helper to get a "compressed" path represented by a single point at the center of the existing path.
         func compressPath(path: CGPath) -> CGPath {
             let bounds = path.boundingBoxOfPath
@@ -578,48 +519,43 @@ public class ActivityIndicatorButton: UIControl {
             return UIBezierPath(arcCenter: center, radius: 0.0, startAngle: 0.0, endAngle: CGFloat(M_PI * 2), clockwise: true).cgPath
         }
 
-        
-
         // Color transition for "useSolidColorButtons"
         // If the tint color is different between 2 states we animate the change by expanding the new color from the center of the button
-        if prevDisplayState.tintColor != nextDisplayState.tintColor && self.style == .solid  {
-            
+        if prevDisplayState.tintColor != nextDisplayState.tintColor && self.style == .solid {
+
             // The transition layer provides the expanding color change in the state transition. The background view color isn't updating until completing this expand animation
             let transitionLayer = CAShapeLayer()
             transitionLayer.path = self.backgroundLayerPath
-            
+
             CATransaction.begin()
             CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
             transitionLayer.fillColor = nextDisplayState.tintColor.cgColor
             CATransaction.commit()
-            
+
             self.backgroundView.layer.addSublayer(transitionLayer)
-         
+
             let completion = { () -> Void in
-                
+
                 transitionLayer.removeFromSuperlayer()
                 self.updateAllColors()
             }
-            
+
             CATransaction.begin()
             CATransaction.setCompletionBlock(completion)
-            
+
             let bgAnim = CABasicAnimation(keyPath: "path")
             bgAnim.fromValue = compressPath(path: self.backgroundLayerPath)
             bgAnim.toValue = self.backgroundLayerPath
             bgAnim.duration = self.animationDuration
             bgAnim.timingFunction = self.animationTimingFunction
-            
+
             transitionLayer.add(bgAnim, forKey: "bg_expand")
-            
+
             CATransaction.commit()
         }
         else {
             self.updateAllColors()
         }
-        
-        
-        
 
         // Update the image before we drive the animations
         self.setImage(image: nextDisplayState.image)
@@ -627,46 +563,42 @@ public class ActivityIndicatorButton: UIControl {
         // If image has changed and we're animating...
         // For image animations we reveal the new image from the center by expanding its mask
         if shouldAnimateImage {
-            
+
             // Image mask expand
             let imageAnim = CABasicAnimation(keyPath: "path")
             imageAnim.fromValue = compressPath(path: self.imageViewMaskPath)
             imageAnim.toValue = self.imageViewMaskPath
             imageAnim.duration = self.animationDuration
             imageAnim.timingFunction = self.animationTimingFunction
-            
+
             self.imageViewMask.add(imageAnim, forKey: "image_expand")
         }
         else {
             updateAllColors()
         }
 
-        
         // Restart / adjust progress view if needed
         self.updateSpinningAnimation()
-        
+
         switch prevDisplayState.progressBarStyle {
         case .percentage(let value):
             self.updateProgress(fromValue: value, animated: animated)
-            
+
         default:
             self.updateProgress(fromValue: 0, animated: animated)
         }
-        
-        
+
         // Update the image constraints
         updateButtonConstains()
-        
+
         // Finally update our current activity state
         self.renderedActivityState = activityState
     }
 
-
-    
     private func updateProgress(fromValue prevValue: Float, animated: Bool) {
         switch self.activityState.progressBarStyle {
         case .percentage(let value):
-            
+
             if animated {
                 let anim = CABasicAnimation(keyPath: "strokeEnd")
                 anim.fromValue = prevValue
@@ -674,7 +606,7 @@ public class ActivityIndicatorButton: UIControl {
                 anim.duration = self.animationDuration
                 anim.timingFunction = self.animationTimingFunction
                 self.progressView.progressLayer.add(anim, forKey: "progress")
-                
+
                 self.progressView.progressLayer.strokeEnd = CGFloat(value)
             }
             else {
@@ -683,13 +615,12 @@ public class ActivityIndicatorButton: UIControl {
                 self.progressView.progressLayer.strokeEnd = CGFloat(value)
                 CATransaction.commit()
             }
-            
+
         default:
             break
         }
     }
 
-    
     /// This replicates the Google style activity spinner from Material Design
     private func updateSpinningAnimation() {
 
@@ -703,7 +634,7 @@ public class ActivityIndicatorButton: UIControl {
             // The animation is broken into stages that execute in order. All animations in "stage 1" execute simultaneously followed by animations in "stage 2"
             // "Head" refers to the strokeStart which is trailing behind the animation (i.e. the animation is moving clockwise away from the head)
             // "Tail refers to the strokeEnd which is leading the animation
-            
+
             let stage1Time = 0.9
             let pause1Time = 0.05
             let stage2Time = 0.6
@@ -713,7 +644,7 @@ public class ActivityIndicatorButton: UIControl {
             var animationTime = stage1Time
 
             // Stage1: The circle begins life empty, nothing is stroked.  The tail moves ahead to travel the circumference of the circle. The head follows but lags behind 75% of the circumference. Now 75% of the circles circumference is stroked.
-            
+
             let headStage1 = CABasicAnimation(keyPath: "strokeStart")
             headStage1.fromValue = 0.0
             headStage1.toValue = 0.25
@@ -739,7 +670,7 @@ public class ActivityIndicatorButton: UIControl {
             tailPause1.duration = pause1Time
 
             animationTime += pause1Time
-            
+
             // Stage2: The head whips around the circle to almost catch up with the tail. The tail stays at the end of the circle. Now 10% of the circles circumference is stroked.
 
             let headStage2 = CABasicAnimation(keyPath: "strokeStart")
@@ -755,7 +686,7 @@ public class ActivityIndicatorButton: UIControl {
             tailStage2.duration = stage2Time
 
             animationTime += stage2Time
-            
+
             // Pause2: Maintain state from Stage2 for a moment.
 
             let headPause2 = CABasicAnimation(keyPath: "strokeStart")
@@ -771,7 +702,7 @@ public class ActivityIndicatorButton: UIControl {
             tailPause2.duration = pause2Time
 
             animationTime += pause2Time
-            
+
             // Stage3: The head moves to 100% the circumference to finally catch up with the tail which remains stationary. Now none of the circle is stroked and we are back at the starting state.
 
             let headStage3 = CABasicAnimation(keyPath: "strokeStart")
@@ -804,92 +735,82 @@ public class ActivityIndicatorButton: UIControl {
             self.progressView.progressLayer.add(rotationAnim, forKey: kRotationAnim)
         }
     }
-    
-    
+
     // MARK: - Theming
-    
+
     override public func tintColorDidChange() {
         super.tintColorDidChange()
-        
+
         updateAllColors()
     }
-    
+
     private func updateButtonColors() {
-        
+
         var tintColor = self.tintColorForCurrentActivityState
         var foregroundColor = self.foregroundColorForCurrentActivityState
-        
+
         if !isEnabled {
             tintColor = tintColor.colorWithSaturation(sat: 0.2)
             foregroundColor = foregroundColor.colorWithSaturation(sat: 0.2)
         }
-        
+
         switch self.style {
         case .outline:
             self.backgroundView.shapeLayer.fillColor = UIColor.clear.cgColor
             self.imageView.tintColor = tintColor
             self.dropShadowLayer.shadowColor = UIColor.clear.cgColor
-            
+
         case .solid:
             self.backgroundView.shapeLayer.fillColor = tintColor.cgColor
             self.imageView.tintColor = foregroundColor
             self.dropShadowLayer.shadowColor = self.shadowColor.cgColor
         }
     }
-    
+
     private func updateTrackColors() {
-        
+
         var tintColor = self.tintColorForCurrentActivityState
-        
+
         if !isEnabled {
             tintColor = tintColor.colorWithSaturation(sat: 0.2)
         }
-        
+
         let trackColor = self.trackColorForCurrentActivityState.cgColor
         let clear = UIColor.clear.cgColor
-        
+
         self.progressView.progressLayer.strokeColor = tintColor.cgColor
         self.progressView.progressLayer.fillColor = clear
-        
+
         self.backgroundView.shapeLayer.strokeColor = trackColor
     }
-    
+
     private func updateAllColors() {
         self.updateButtonColors()
         self.updateTrackColors()
     }
 
-
-
-
-
-    
-
-
-
-
     // MARK: - UI (Private)
-    
+
     /*
 
     We are wrapping all our layers in views for easier arrangment.
 
     */
-    
+
     private class BackgroundView: UIView {
-        
+
         var shapeLayer: CAShapeLayer {
             get {
                 return self.layer as! CAShapeLayer
             }
         }
-        
+
         override public class var layerClass: AnyClass {
             return CAShapeLayer.self
         }
-        
+
     }
-    
+
     private class ProgressView: UIView {
 
         var progressLayer: CAShapeLayer {
@@ -897,13 +818,13 @@ public class ActivityIndicatorButton: UIControl {
                 return self.layer as! CAShapeLayer
             }
         }
-        
+
         override public class var layerClass: AnyClass {
             return CAShapeLayer.self
         }
-        
+
     }
-    
+
     /// The layer from which to draw the button shadow
     private var dropShadowLayer: CALayer {
         get {
@@ -912,27 +833,20 @@ public class ActivityIndicatorButton: UIControl {
     }
 
     private lazy var imageView: UIImageView = UIImageView()
-    
-    private lazy var imageViewMask: CAShapeLayer = CAShapeLayer()
-    
-    private lazy var backgroundView: BackgroundView = BackgroundView()
-    
-    private lazy var progressView: ProgressView = ProgressView()
 
+    private lazy var imageViewMask: CAShapeLayer = CAShapeLayer()
+
+    private lazy var backgroundView: BackgroundView = BackgroundView()
+
+    private lazy var progressView: ProgressView = ProgressView()
 
     private func setImage(image: UIImage?) {
         self.imageView.image = image
         self.imageView.sizeToFit()
     }
 
-
-
-
-
-
-
     // MARK: - Layout
-    
+
     private var progressLayerPath: CGPath {
         get {
             let progressRadius = min(self.progressView.frame.width, self.progressView.frame.height) * 0.5
@@ -950,32 +864,32 @@ public class ActivityIndicatorButton: UIControl {
             return min(self.backgroundView.frame.width, self.backgroundView.frame.height) * 0.5
         }
     }
-    
+
     private var backgroundLayerPath: CGPath {
         get {
             return UIBezierPath(arcCenter: self.backgroundView.bounds.center, radius: self.backgroundLayerPathRadius, startAngle: Constants.Track.StartAngle, endAngle: Constants.Track.EndAngle, clockwise: true).cgPath
         }
     }
-    
+
     private var imageViewMaskPath: CGPath {
         get {
             return UIBezierPath(arcCenter: self.imageView.bounds.center, radius: self.backgroundLayerPathRadius, startAngle: Constants.Track.StartAngle, endAngle: Constants.Track.EndAngle, clockwise: true).cgPath
         }
     }
-    
+
     private var shadowPath: CGPath {
         get {
             return UIBezierPath(arcCenter: self.bounds.center, radius: self.backgroundLayerPathRadius, startAngle: Constants.Track.StartAngle, endAngle: Constants.Track.EndAngle, clockwise: true).cgPath
         }
     }
-    
+
     // The "INNER" padding is the distance between the background and the track. Have to add the width of the progress and the half of the track (the track is the stroke of the background view)
     private var innerPadding: CGFloat {
         return Constants.Layout.outerPadding + progressBarWidth + 0.5 * trackWidth
     }
 
     private var buttonConstraints = [NSLayoutConstraint]()
-    
+
     /**
     Should be called once and only once. Adds layers to view heirarchy.
     */
@@ -984,37 +898,37 @@ public class ActivityIndicatorButton: UIControl {
         self.imageView.translatesAutoresizingMaskIntoConstraints = false
         self.backgroundView.translatesAutoresizingMaskIntoConstraints = false
         self.progressView.translatesAutoresizingMaskIntoConstraints = false
-        
+
         self.imageView.backgroundColor = UIColor.clear
         self.backgroundView.backgroundColor = UIColor.clear
         self.progressView.backgroundColor = UIColor.clear
-        
+
         self.imageView.isUserInteractionEnabled = false
         self.backgroundView.isUserInteractionEnabled = false
         self.progressView.isUserInteractionEnabled = false
-        
+
         self.backgroundColor = UIColor.clear
-        
+
         self.addSubview(self.backgroundView)
         self.addSubview(self.imageView)
         self.addSubview(self.progressView)
 
-        let views = ["progress" : self.progressView]
-        let metrics: [String : NSNumber] = ["OUTER" : NSNumber(value: Float(Constants.Layout.outerPadding))]
-        
+        let views = ["progress": self.progressView]
+        let metrics: [String : NSNumber] = ["OUTER": NSNumber(value: Float(Constants.Layout.outerPadding))]
+
         self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(OUTER)-[progress]-(OUTER)-|", options: NSLayoutFormatOptions(), metrics: metrics, views: views))
         self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(OUTER)-[progress]-(OUTER)-|", options: NSLayoutFormatOptions(), metrics: metrics, views: views))
 
         self.addConstraint(NSLayoutConstraint(item: self.imageView, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0))
         self.addConstraint(NSLayoutConstraint(item: self.imageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1.0, constant: 0.0))
-        
+
         updateButtonConstains()
-        
+
         // Set up imageViewMask
-        
+
         self.imageViewMask.fillColor = UIColor.white.cgColor
         self.imageView.layer.mask = self.imageViewMask
-        
+
         // Set up drop shadow
         let layer = self.dropShadowLayer
         layer.shadowOffset = CGSize(width: 0, height: 2)
@@ -1022,7 +936,7 @@ public class ActivityIndicatorButton: UIControl {
         layer.shadowOpacity = 0.5
         layer.masksToBounds = false
     }
-    
+
     /**
     The button constraints may change if progress bar or track width is changed. This method will handle updates
     */
@@ -1031,24 +945,24 @@ public class ActivityIndicatorButton: UIControl {
         // Clear old constraints
         self.removeConstraints(buttonConstraints)
         buttonConstraints.removeAll()
-        
-        let views: [String : UIView] = ["bg" : self.backgroundView, "image" : imageView]
-        let metrics: [String : NSNumber] = ["INNER" : NSNumber(value: Float(innerPadding)), "IMAGE_PAD" : NSNumber(value: Float(innerPadding + minimumImagePadding))]
-        
+
+        let views: [String : UIView] = ["bg": self.backgroundView, "image": imageView]
+        let metrics: [String : NSNumber] = ["INNER": NSNumber(value: Float(innerPadding)), "IMAGE_PAD": NSNumber(value: Float(innerPadding + minimumImagePadding))]
+
         buttonConstraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-(INNER)-[bg]-(INNER)-|", options: NSLayoutFormatOptions(), metrics: metrics, views: views)
         buttonConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-(INNER)-[bg]-(INNER)-|", options: NSLayoutFormatOptions(), metrics: metrics, views: views)
-        
+
         buttonConstraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-(IMAGE_PAD)-[image]-(IMAGE_PAD)-|", options: NSLayoutFormatOptions(), metrics: metrics, views: views)
         buttonConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-(IMAGE_PAD)-[image]-(IMAGE_PAD)-|", options: NSLayoutFormatOptions(), metrics: metrics, views: views)
-        
+
         self.addConstraints(buttonConstraints)
     }
-    
+
     /**
     Should be called when bounds change to update paths of shape layers.
     */
     private func updateForCurrentBounds() {
-        
+
         self.progressView.progressLayer.lineWidth = progressBarWidth
         self.backgroundView.shapeLayer.lineWidth = trackWidth
         self.progressView.progressLayer.path = self.progressLayerPath
@@ -1077,11 +991,6 @@ public class ActivityIndicatorButton: UIControl {
         return CGSize(width: maxW, height: maxH)
     }
 
-
-
-
-
-
     // MARK: - Hit Animation
 
     func handleTouchUp(sender: ActivityIndicatorButton) {
@@ -1093,7 +1002,6 @@ public class ActivityIndicatorButton: UIControl {
 
         self.createRippleHitAnimation(isTouchUp: false)
     }
-
 
     /**
     Creates a new layer under the control which expands outward.
@@ -1162,5 +1070,5 @@ public class ActivityIndicatorButton: UIControl {
 
         CATransaction.commit()
     }
-    
+
 }
