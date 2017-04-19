@@ -417,8 +417,8 @@ public class ActivityIndicatorButton: UIControl {
             static let defaultContentSize: CGSize = CGSize(width: 35.0, height: 35.0)
         }
         struct Track {
-            static let StartAngle = CGFloat(-M_PI_2)  // Start angle is pointing directly upwards on the screen. This is where progress animations will begin
-            static let EndAngle = CGFloat(3 * M_PI_2)
+            static let StartAngle = CGFloat(-Double.pi/2)  // Start angle is pointing directly upwards on the screen. This is where progress animations will begin
+            static let EndAngle = CGFloat(3 * Double.pi/2)
         }
     }
 
@@ -519,7 +519,7 @@ public class ActivityIndicatorButton: UIControl {
         func compressPath(path: CGPath) -> CGPath {
             let bounds = path.boundingBoxOfPath
             let center = CGPoint(x: bounds.midX, y: bounds.midY)
-            return UIBezierPath(arcCenter: center, radius: 0.0, startAngle: 0.0, endAngle: CGFloat(M_PI * 2), clockwise: true).cgPath
+            return UIBezierPath(arcCenter: center, radius: 0.0, startAngle: 0.0, endAngle: CGFloat(Double.pi * 2), clockwise: true).cgPath
         }
 
         // Color transition for "useSolidColorButtons"
@@ -731,7 +731,7 @@ public class ActivityIndicatorButton: UIControl {
 
             let rotationAnim = CABasicAnimation(keyPath: "transform.rotation")
             rotationAnim.fromValue = 0
-            rotationAnim.toValue = 2 * M_PI
+            rotationAnim.toValue = 2 * Double.pi
             rotationAnim.duration = 3.0
             rotationAnim.repeatCount = Float.infinity
 
@@ -1024,8 +1024,8 @@ public class ActivityIndicatorButton: UIControl {
         let bounds = self.bounds
         let radius = max(bounds.width, bounds.height) * 0.5
         let center = CGPoint(x: bounds.midX, y: bounds.midY)
-        let fromPath = UIBezierPath(arcCenter: center, radius: 0.0, startAngle: 0.0, endAngle: CGFloat(2 * M_PI), clockwise: true).cgPath
-        let toPath = UIBezierPath(arcCenter: center, radius: radius + distance, startAngle: 0.0, endAngle: CGFloat(2 * M_PI), clockwise: true).cgPath
+        let fromPath = UIBezierPath(arcCenter: center, radius: 0.0, startAngle: 0.0, endAngle: CGFloat(2 * Double.pi), clockwise: true).cgPath
+        let toPath = UIBezierPath(arcCenter: center, radius: radius + distance, startAngle: 0.0, endAngle: CGFloat(2 * Double.pi), clockwise: true).cgPath
 
         let completion = { () -> Void in
             layer.removeFromSuperlayer()
