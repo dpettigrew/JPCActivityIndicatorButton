@@ -167,7 +167,7 @@
 						CreatedOnToolsVersion = 6.4;
 						DevelopmentTeam = 2JP854HHCW;
 						DevelopmentTeamName = LifeCentrics;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0900;
 					};
 					FD1151881B4ACAC3005F0232 = {
 						CreatedOnToolsVersion = 6.4;
