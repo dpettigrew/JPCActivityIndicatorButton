@@ -297,7 +297,7 @@ public class ActivityIndicatorButton: UIControl {
 
     /// If true the circular background of this control is colored with the tint color and the image is colored white. Otherwise the background is clear and the image is tinted. Image color is only adjusted if it is a template image.
     /// :see: ActivityIndicatorButtonStyle
-    @IBInspectable public var style: ActivityIndicatorButtonStyle = .solid {
+    public var style: ActivityIndicatorButtonStyle = .solid {
         didSet {
             self.updateAllColors()
         }
